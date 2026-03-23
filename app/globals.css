@@ -5,11 +5,11 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --primary: oklch(0.553 0.195 38.402);
-  --secondary: oklch(0.967 0.001 286.375);
+  --primary: rgb(1, 110, 255);
+  --secondary: rgb(254, 150, 51);
   --text: rgb(15, 15, 15);
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.147 0.004 49.25);
+  --background: rgb(255, 248, 240);
+  --foreground: rgb(15, 15, 15);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.147 0.004 49.25);
   --popover: oklch(1 0 0);
@@ -87,7 +87,6 @@
 
 body {
   color: var(--primary);
-  font-family: 'Helvetica Neue';
 }
 
 .dark {
@@ -128,9 +127,11 @@ body {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-serif;
   }
