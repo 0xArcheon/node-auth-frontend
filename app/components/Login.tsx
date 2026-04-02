@@ -47,11 +47,12 @@ function Login() {
     const onRegisterSubmit: SubmitHandler<RegisterInputs> = (data) => console.log("Register data:", data)
 
     return (
-        <main className='tracking-wide font-mono flex h-full w-full'>
+        <main className="tracking-wide font-mono flex h-full w-full">
             <div className="left hidden md:block md:w-1/2 md:h-full">
                 <div className="relative w-full h-full">
                     <Image
-                        src="/images/orng.jpg"
+                        src={`${theme === 'dark' ? '/images/orng-dark.jpg' : '/images/orng.jpg'}`}
+                        // src="/images/orng.jpg"
                         alt="orange"
                         fill
                         className="object-cover"
@@ -65,8 +66,8 @@ function Login() {
                 </div>
             </div>
 
-            <div className={`right w-full md:w-2/3 lg:w-1/2 flex justify-center items-center flex-col ${theme === 'dark' ? 'dark' : 'bg-background'}`}>
-
+            <div className={`right w-full md:w-2/3 lg:w-1/2 flex justify-center items-center flex-col bg-background ${theme === 'dark' ? 'dark' : ''}`}>
+                {/* <div className="welcome font-serif text-4xl italic mb-4 text-blutxt font-semibold">Welcome <span className='not-italic'>back</span></div> */}
                 <Card className={`w-4/5 md:w-2/3 lg:w-1/2 px-4 py-4`}>
                     <CardContent>
                         <Tabs>
@@ -77,20 +78,20 @@ function Login() {
                             <TabsContent value="login" className="flex flex-col gap-4">
                                 <form onSubmit={handleLoginSubmit(onLoginSubmit)}>
 
-                                    <div className='flex flex-col text-text-primary mb-2'>
-                                        <label htmlFor="">username</label>
+                                    <div className='flex flex-col text-col mb-2'>
+                                        <label htmlFor="" className='text-blutxt'>username</label>
                                         <Input type='text' className='rounded-sm' {...registerLogin("username")}></Input>
-                                        <div className="err text-xs text-orange-600 tracking-tighter">{loginErrors.username && <p>{loginErrors.username.message}</p>}</div>
+                                        <div className="err text-xs text-destructive tracking-tighter">{loginErrors.username && <p>{loginErrors.username.message}</p>}</div>
                                     </div>
-                                    <div className='flex flex-col text-text-primary mb-2'>
-                                        <label htmlFor="">password</label>
+                                    <div className='flex flex-col text-primary-text mb-2'>
+                                        <label htmlFor="" className='text-blutxt'>password</label>
                                         <Input type='password' className='rounded-sm' {...registerLogin("password")}></Input>
-                                        <div className="err text-xs text-orange-600 tracking-tighter">{loginErrors.password && <p>{loginErrors.password.message}</p>}</div>
+                                        <div className="err text-xs text-destructive tracking-tighter">{loginErrors.password && <p>{loginErrors.password.message}</p>}</div>
 
                                     </div>
                                     <Button size="lg" type='submit' className="w-full bg-primary font-bold flex items-center">
                                         <span>login</span>
-                                        <HugeiconsIcon icon={ArrowRight01Icon} size={28}
+                                        <HugeiconsIcon icon={ArrowRight01Icon} size={32}
                                             color="currentColor"
                                             strokeWidth={3} />
                                     </Button>
@@ -100,25 +101,25 @@ function Login() {
                             <TabsContent value="register" className="flex flex-col gap-2">
                                 <form onSubmit={handleSignupSubmit(onRegisterSubmit)}>
 
-                                    <div className='flex flex-col text-primary mb-2'>
-                                        <label htmlFor="">username</label>
+                                    <div className='flex flex-col mb-2'>
+                                        <label htmlFor="" className='text-blutxt'>username</label>
                                         <Input type='text' className='rounded-sm' {...registerSignup("username")}></Input>
-                                        <div className="err text-xs text-orange-600 tracking-tighter">{signupErrors.username && <p>{signupErrors.username.message}</p>}</div>
+                                        <div className="err text-xs text-destructive tracking-tighter">{signupErrors.username && <p>{signupErrors.username.message}</p>}</div>
                                     </div>
-                                    <div className='flex flex-col text-primary mb-2'>
-                                        <label htmlFor="">email</label>
+                                    <div className='flex flex-col mb-2'>
+                                        <label htmlFor="" className='text-blutxt'>email</label>
                                         <Input type='email' className='rounded-sm' {...registerSignup("email")}></Input>
-                                        <div className="err text-xs text-orange-600 tracking-tighter">{signupErrors.email && <p>{signupErrors.email.message}</p>}</div>
+                                        <div className="err text-xs text-destructive tracking-tighter">{signupErrors.email && <p>{signupErrors.email.message}</p>}</div>
                                     </div>
-                                    <div className='flex flex-col text-primary mb-2'>
-                                        <label htmlFor="">password</label>
+                                    <div className='flex flex-col mb-2'>
+                                        <label htmlFor="" className='text-blutxt'>password</label>
                                         <Input type='password' className='rounded-sm' {...registerSignup("password")}></Input>
-                                        <div className="err text-xs text-orange-600 tracking-tighter">{signupErrors.password && <p>{signupErrors.password.message}</p>}</div>
+                                        <div className="err text-xs text-destructive tracking-tighter">{signupErrors.password && <p>{signupErrors.password.message}</p>}</div>
                                     </div>
-                                    <div className='flex flex-col text-primary mb-2'>
-                                        <label htmlFor="">re-enter Password</label>
+                                    <div className='flex flex-col mb-2'>
+                                        <label htmlFor="" className='text-blutxt'>re-enter Password</label>
                                         <Input type='password' className='rounded-sm' {...registerSignup("confirmPass")}></Input>
-                                        <div className="err text-xs text-orange-600 tracking-tighter">{signupErrors.confirmPass && <p>{signupErrors.confirmPass.message}</p>}</div>
+                                        <div className="err text-xs text-destructive tracking-tighter">{signupErrors.confirmPass && <p>{signupErrors.confirmPass.message}</p>}</div>
                                     </div>
                                     <Button size="lg" type="submit" className="w-full bg-primary font-bold flex items-center">
                                         <span>create</span>
@@ -130,7 +131,7 @@ function Login() {
                             </TabsContent>
                         </Tabs>
                         <div className="forgot py-4">
-                            <Link href="#" className='text-blue-800'>
+                            <Link href="#" className='text-blutxt/80'>
                                 <u>Forgot password ?</u>
                             </Link>
                         </div>
