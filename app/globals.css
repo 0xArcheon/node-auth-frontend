@@ -7,7 +7,8 @@
 :root {
   --primary: rgb(1, 110, 255);
   --secondary: rgb(254, 150, 51);
-  --text: rgb(15, 15, 15);
+  --text-primary: rgb(1, 110, 255);
+  --background-dark: rgb(50, 48, 45);
   --background: rgb(255, 248, 240);
   --foreground: rgb(15, 15, 15);
   --card: oklch(1 0 0);
@@ -43,7 +44,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-primary: var(--primary);
+  --background-dark: var(--background-dark);
   --color-secondary: var(--secondary);
+  --text-primary: var(--text-primary);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-ibm-plex);
   --font-heading: var(--font-serif);
@@ -90,13 +93,14 @@ body {
 }
 
 .dark {
-  --background: oklch(0.147 0.004 49.25);
+  --background: rgb(50, 48, 45);
   --foreground: oklch(0.985 0.001 106.423);
   --card: oklch(0.216 0.006 56.043);
   --card-foreground: oklch(0.985 0.001 106.423);
   --popover: oklch(0.216 0.006 56.043);
   --popover-foreground: oklch(0.985 0.001 106.423);
-  --primary: oklch(0.47 0.157 37.304);
+  --primary: rgb(1, 110, 255);
+  --secondary: rgb(254, 150, 51);
   --primary-foreground: oklch(0.98 0.016 73.684);
   --secondary: oklch(0.274 0.006 286.033);
   --secondary-foreground: oklch(0.985 0 0);

@@ -1,5 +1,4 @@
 "use client"
-import React from 'react'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -11,31 +10,41 @@ import Image from 'next/image'
 import { useForm, SubmitHandler } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { useTheme } from '../themeContext'
 
-type loginInputs = {
-    username: string,
-    password: string,
-}
-
-type resgiterInputs = {
-    username: string,
-    email: string,
-    password: string,
-    password2: string,
-}
-
-const schema = z.object({
+const loginSchema = z.object({
     username: z.string().min(3, "username must be at least 3 characters long"),
     password: z.string().min(4, "password must be at least 4 characters long"),
+});
+
+const registerSchema = z.object({
+    username: z.string().min(3, "username must be at least 3 characters long"),
+    email: z.string().email("must be a valid email").min(4, "must be a valid email"),
+    password: z.string().min(4, "password must be at least 4 characters long"),
     confirmPass: z.string(),
-    email: z.email().min(4, "must be a valid email"),
-})
+}).refine((data) => data.password === data.confirmPass, { message: "passwords donot match", path: ["confirmPass"] });
+
+type LoginInputs = z.infer<typeof loginSchema>;
+type RegisterInputs = z.infer<typeof registerSchema>;
 
 function Login() {
 
-    const { register, handleSubmit, watch, formState: { errors } } = useForm({ resolver: zodResolver(schema) });
+    const { theme, toggleTheme } = useTheme();
 
-    const onSubmit: SubmitHandler<loginInputs> = (data) => console.log(data)
+    const {
+        register: registerLogin,
+        handleSubmit: handleLoginSubmit,
+        formState: { errors: loginErrors }
+    } = useForm<LoginInputs>({ resolver: zodResolver(loginSchema) });
+
+    const {
+        register: registerSignup,
+        handleSubmit: handleSignupSubmit,
+        formState: { errors: signupErrors }
+    } = useForm<RegisterInputs>({ resolver: zodResolver(registerSchema) });
+
+    const onLoginSubmit: SubmitHandler<LoginInputs> = (data) => console.log("Login data:", data)
+    const onRegisterSubmit: SubmitHandler<RegisterInputs> = (data) => console.log("Register data:", data)
 
     return (
         <main className='tracking-wide font-mono flex h-full w-full'>
@@ -56,9 +65,9 @@ function Login() {
                 </div>
             </div>
 
-            <div className="right w-full md:w-2/3 lg:w-1/2 flex justify-center items-center flex-col">
+            <div className={`right w-full md:w-2/3 lg:w-1/2 flex justify-center items-center flex-col ${theme === 'dark' ? 'dark' : 'bg-background'}`}>
 
-                <Card className='w-4/5 md:w-2/3 lg:w-1/2 px-4 py-4'>
+                <Card className={`w-4/5 md:w-2/3 lg:w-1/2 px-4 py-4`}>
                     <CardContent>
                         <Tabs>
                             <TabsList variant="line" className="my-4">
@@ -66,21 +75,21 @@ function Login() {
                                 <TabsTrigger value="register" className="bg-primary font-bold text-base">Register</TabsTrigger>
                             </TabsList>
                             <TabsContent value="login" className="flex flex-col gap-4">
-                                <form onSubmit={handleSubmit(onSubmit)}>
+                                <form onSubmit={handleLoginSubmit(onLoginSubmit)}>
 
-                                    <div className='flex flex-col text-primary mb-2'>
+                                    <div className='flex flex-col text-text-primary mb-2'>
                                         <label htmlFor="">username</label>
-                                        <Input type='text' className='rounded-sm' {...register("username")}></Input>
-                                        <div className="err text-xs text-orange-600 tracking-tighter">{errors.username && <p>{errors.username.message}</p>}</div>
+                                        <Input type='text' className='rounded-sm' {...registerLogin("username")}></Input>
+                                        <div className="err text-xs text-orange-600 tracking-tighter">{loginErrors.username && <p>{loginErrors.username.message}</p>}</div>
                                     </div>
-                                    <div className='flex flex-col text-primary mb-2'>
+                                    <div className='flex flex-col text-text-primary mb-2'>
                                         <label htmlFor="">password</label>
-                                        <Input type='password' className='rounded-sm' {...register("password")}></Input>
-                                        <div className="err text-xs text-orange-600 tracking-tighter">{errors.password && <p>{errors.password.message}</p>}</div>
+                                        <Input type='password' className='rounded-sm' {...registerLogin("password")}></Input>
+                                        <div className="err text-xs text-orange-600 tracking-tighter">{loginErrors.password && <p>{loginErrors.password.message}</p>}</div>
 
                                     </div>
-                                    <Button size="lg" type='submit' className="w-full bg-primary font-bold">
-                                        login
+                                    <Button size="lg" type='submit' className="w-full bg-primary font-bold flex items-center">
+                                        <span>login</span>
                                         <HugeiconsIcon icon={ArrowRight01Icon} size={28}
                                             color="currentColor"
                                             strokeWidth={3} />
@@ -89,29 +98,30 @@ function Login() {
                                 </form>
                             </TabsContent>
                             <TabsContent value="register" className="flex flex-col gap-2">
-                                <form onSubmit={handleSubmit(onSubmit)}>
+                                <form onSubmit={handleSignupSubmit(onRegisterSubmit)}>
 
-                                    <div className='flex flex-col text-primary'>
+                                    <div className='flex flex-col text-primary mb-2'>
                                         <label htmlFor="">username</label>
-                                        <Input type='text' className='rounded-sm' {...register("username")}></Input>
-                                        <div className="err text-xs text-orange-600 tracking-tighter">{errors.username && <p>{errors.username.message}</p>}</div>
+                                        <Input type='text' className='rounded-sm' {...registerSignup("username")}></Input>
+                                        <div className="err text-xs text-orange-600 tracking-tighter">{signupErrors.username && <p>{signupErrors.username.message}</p>}</div>
                                     </div>
-                                    <div className='flex flex-col text-primary'>
+                                    <div className='flex flex-col text-primary mb-2'>
                                         <label htmlFor="">email</label>
-                                        <Input type='email' className='rounded-sm' {...register("email")}></Input>
-                                        <div className="err text-xs text-orange-600 tracking-tighter">{errors.email && <p>{errors.email.message}</p>}</div>
+                                        <Input type='email' className='rounded-sm' {...registerSignup("email")}></Input>
+                                        <div className="err text-xs text-orange-600 tracking-tighter">{signupErrors.email && <p>{signupErrors.email.message}</p>}</div>
                                     </div>
-                                    <div className='flex flex-col text-primary'>
+                                    <div className='flex flex-col text-primary mb-2'>
                                         <label htmlFor="">password</label>
-                                        <Input type='password' className='rounded-sm' {...register("password")}></Input>
-                                        <div className="err text-xs text-orange-600 tracking-tighter">{errors.password && <p>{errors.password.message}</p>}</div>
+                                        <Input type='password' className='rounded-sm' {...registerSignup("password")}></Input>
+                                        <div className="err text-xs text-orange-600 tracking-tighter">{signupErrors.password && <p>{signupErrors.password.message}</p>}</div>
                                     </div>
-                                    <div className='flex flex-col text-primary'>
+                                    <div className='flex flex-col text-primary mb-2'>
                                         <label htmlFor="">re-enter Password</label>
-                                        <Input type='password' className='rounded-sm' {...register("confirmPass")}></Input>
-                                        <div className="err text-xs text-orange-600 tracking-tighter">{errors.confirmPass && <p>{errors.confirmPass.message}</p>}</div>
+                                        <Input type='password' className='rounded-sm' {...registerSignup("confirmPass")}></Input>
+                                        <div className="err text-xs text-orange-600 tracking-tighter">{signupErrors.confirmPass && <p>{signupErrors.confirmPass.message}</p>}</div>
                                     </div>
-                                    <Button size="lg" type="submit" className="w-full bg-primary font-bold">create account
+                                    <Button size="lg" type="submit" className="w-full bg-primary font-bold flex items-center">
+                                        <span>create</span>
                                         <HugeiconsIcon icon={AddCircleIcon} size={24}
                                             color="currentColor"
                                             strokeWidth={3} />
@@ -123,7 +133,6 @@ function Login() {
                             <Link href="#" className='text-blue-800'>
                                 <u>Forgot password ?</u>
                             </Link>
-
                         </div>
                     </CardContent>
                 </Card>
