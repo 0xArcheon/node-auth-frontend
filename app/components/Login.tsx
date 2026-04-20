@@ -11,6 +11,7 @@ import { useForm, SubmitHandler } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTheme } from '../themeContext'
+import { useMutation } from '@tanstack/react-query'
 
 const loginSchema = z.object({
     username: z.string().min(3, "username must be at least 3 characters long"),
@@ -43,7 +44,29 @@ function Login() {
         formState: { errors: signupErrors }
     } = useForm<RegisterInputs>({ resolver: zodResolver(registerSchema) });
 
-    const onLoginSubmit: SubmitHandler<LoginInputs> = (data) => console.log("Login data:", data)
+    const loginMutation = useMutation({
+        mutationFn: async (data: LoginInputs) => {
+            const response = await fetch('/api/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            });
+            if (!response.ok) {
+                throw new Error('Login failed');
+            }
+            return response.json();
+        },
+        onSuccess: (data) => {
+            console.log("Login success:", data);
+        },
+        onError: (error) => {
+            console.error("Login error:", error);
+        }
+    });
+
+    const onLoginSubmit: SubmitHandler<LoginInputs> = (data) => loginMutation.mutate(data);
     const onRegisterSubmit: SubmitHandler<RegisterInputs> = (data) => console.log("Register data:", data)
 
     return (
@@ -51,7 +74,7 @@ function Login() {
             <div className="left hidden md:block md:w-1/2 md:h-full">
                 <div className="relative w-full h-full">
                     <Image
-                        src={`${theme === 'dark' ? '/images/orng-dark.jpg' : '/images/orng.jpg'}`}
+                        src={`${theme === 'dark' ? '/images/ascii-earth-dark.jpg' : '/images/ascii-earth.jpg'}`}
                         // src="/images/orng.jpg"
                         alt="orange"
                         fill
