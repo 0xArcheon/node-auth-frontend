@@ -12,6 +12,7 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useTheme } from '../themeContext'
 import { useMutation } from '@tanstack/react-query'
+import { toast } from "sonner"
 
 const loginSchema = z.object({
     username: z.string().min(3, "username must be at least 3 characters long"),
@@ -59,15 +60,43 @@ function Login() {
             return response.json();
         },
         onSuccess: (data) => {
-            console.log("Login success:", data);
+            toast.success(data.message);
         },
         onError: (error) => {
-            console.error("Login error:", error);
+            toast.error("An error occured while loggin in");
+            console.log(error);
+        }
+    });
+
+    const registerMutation = useMutation({
+        mutationFn: async (data: RegisterInputs) => {
+            const { confirmPass, ...requestData } = data;
+            const response = await fetch('/api/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+
+            console.log(response);
+            if (!response.ok) {
+                const errorData = await response.json().catch(() => null);
+                throw new Error(errorData?.message || errorData?.error || 'Registration failed');
+            }
+            return response.json();
+        },
+        onSuccess: (data) => {
+            toast.success(data.message || "Registration successful");
+        },
+        onError: (error: Error) => {
+            toast.error(error.message || "An error occured while registering user");
+            console.error("Failed to register user", error);
         }
     });
 
     const onLoginSubmit: SubmitHandler<LoginInputs> = (data) => loginMutation.mutate(data);
-    const onRegisterSubmit: SubmitHandler<RegisterInputs> = (data) => console.log("Register data:", data)
+    const onRegisterSubmit: SubmitHandler<RegisterInputs> = (data) => registerMutation.mutate(data);
 
     return (
         <main className="tracking-wide font-mono flex h-full w-full">

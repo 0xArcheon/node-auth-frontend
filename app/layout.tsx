@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, Lora, Playfair_Display, IBM_Plex_Mono } from "next/f
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import Providers from "./providers";
+import { Toaster } from "@/components/ui/sonner"
 
 const lora = Lora({ subsets: ['latin'], variable: '--font-serif' });
 
@@ -44,6 +45,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <Providers>{children}</Providers>
+        <Toaster />
       </body>
     </html>
   );
