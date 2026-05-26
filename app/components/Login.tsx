@@ -13,6 +13,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useTheme } from '../themeContext'
 import { useMutation } from '@tanstack/react-query'
 import { toast } from "sonner"
+import { useAuth } from '../authContext'
 
 const loginSchema = z.object({
     username: z.string().min(3, "username must be at least 3 characters long"),
@@ -32,6 +33,7 @@ type RegisterInputs = z.infer<typeof registerSchema>;
 function Login() {
 
     const { theme, toggleTheme } = useTheme();
+    const { setAccessToken } = useAuth();
 
     const {
         register: registerLogin,
@@ -61,6 +63,7 @@ function Login() {
         },
         onSuccess: (data) => {
             toast.success(data.message);
+            setAccessToken(data.accessToken);
         },
         onError: (error) => {
             toast.error("An error occured while loggin in");
@@ -103,16 +106,15 @@ function Login() {
             <div className="left hidden md:block md:w-1/2 md:h-full">
                 <div className="relative w-full h-full">
                     <Image
-                        src={`${theme === 'dark' ? '/images/ascii-earth-dark.jpg' : '/images/ascii-earth.jpg'}`}
+                        src={`${theme === 'dark' ? '/images/dark.png' : '/images/blue.jpg'}`}
                         // src="/images/orng.jpg"
                         alt="orange"
                         fill
                         className="object-cover"
                     />
                     <div className="tagline absolute inset-0 font-serif text-background flex items-end">
-                        <div className='text-6xl italic my-6 ml-4'>
-                            Auth <span className='not-italic text-4xl'>made simple</span>
-                            {/* <span className='font-mono not-italic text-4xl tracking-tighter'>made simple</span> */}
+                        <div className='text-4xl italic my-6 ml-4'>
+                            Auth <span className='not-italic text-3xl'>without friction</span>
                         </div>
                     </div>
                 </div>
